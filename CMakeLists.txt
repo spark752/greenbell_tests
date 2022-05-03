@@ -1,6 +1,6 @@
 # Test adding Greenbell static library
 cmake_minimum_required(VERSION 3.7.2)
-project(Test)
+project(GBTest)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
@@ -18,11 +18,10 @@ set(PROJECT_WARNINGS
     -Wpedantic
     -Wconversion
     -Wsign-conversion
-    -Wno-sign-conversion
     -Wnull-dereference
     -Wdouble-promotion
 )
-
+    
 set(greenbell_INCLUDE "../greenbell/include" CACHE STRING
     "Greenbell Development Files")
 
@@ -30,12 +29,12 @@ set(greenbell_DIR "../greenbell/build" CACHE STRING
     "Greenbell Library Location")
 find_package(greenbell)
 
-add_executable(test
+add_executable(gbtest
     main.cpp
 )
-target_link_libraries(test greenbell)
-target_compile_options(test PRIVATE ${PROJECT_WARNINGS})
-target_include_directories(test
+target_link_libraries(gbtest greenbell)
+target_compile_options(gbtest PRIVATE ${PROJECT_WARNINGS} -O2)
+target_include_directories(gbtest
     PUBLIC
         ${greenbell_INCLUDE}
         ${greenbell_DIR}

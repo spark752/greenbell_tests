@@ -1,26 +1,21 @@
-// A minimal Greenbell demo that doesn't use the demo framework
+// Minimal Greenbell testing to make sure an application can be built against
+// Greenbell and the third party libraries are included. This is mostly a 
+// compile test and not intended to be an extensive test of functionality.
+
 #include "gb_glm.h"
+#include "gb_fmt.h"
+#include "gb_math.h"
 #include "window.h"
 #include "SDL2/SDL.h"
 
-int main()
-{
-    // Fill out WindowInfo with properties, or just use the defaults
+// Test that SDL has been dynamically linked and basic OpenGL works
+void graphics() {    
     Greenbell::WindowInfo win_info;
-
-    // Create a Window which will initialize SDL and OpenGL. Do not make any
-    // OpenGL calls before doing this. That includes creating objects which
-    // make OpenGL calls in their constructors.
     Greenbell::Window win{win_info};
-
-    // Main loop
     SDL_Event event;
     bool quit = false;
     while (!quit) {
-        // Initialize timing for the new frame
         win.start_frame();
-
-        // Check event queue
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -38,16 +33,24 @@ int main()
                     break;
             }
         }
-
-        // Clear the window for the main rendering pass
         Greenbell::GL::Clear();
-
-        // Add code to draw something here
-
-        // Send the output to the window and use the soft frame limiter to
-        // block the thread based on a desired maximum frame rate
         win.end_frame(Greenbell::LIMITER_200_FPS);
     }
+}
 
+// Run tests
+int main() {
+    // Test that the fmt library is included
+    fmt::print(fg(fmt::color::green), "Hello from the fmt library!\n");
+   
+    // Test that glm is included
+    const glm::vec4 v1{2.0f, 2.0f, 2.0f, 2.0f};
+    const glm::vec4 v2{1.0f, 2.4f, 3.7f, 4.2f};
+    const auto v3 = v1 * v2;
+    fmt::print("Vector test {} {} {} {}\n", v3.x, v3.y, v3.z, v3.w);
+    
+    // Test other things
+    graphics();
+    
     return 0;
 }
